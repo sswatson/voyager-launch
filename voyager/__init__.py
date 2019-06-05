@@ -28,7 +28,7 @@ def voyager(df):
     opened = webbrowser.open_new_tab('file://' + os.path.join(tmpdir,'html/main.html'))
     if not opened:
         from IPython.display import FileLink
-        localdir = 'tmp' + ''.join(random.choice(string.ascii_letters) for _ in range(6))
+        localdir = 'tmp-voyager-' + ''.join(random.choice(string.ascii_letters) for _ in range(6))
         shutil.copytree(tmpdir,localdir)
         return FileLink(os.path.join(localdir,'html/main.html'))
 
@@ -52,3 +52,8 @@ def in_notebook():
     except ImportError:
         return False
     return True
+
+def clean():
+    for file in os.listdir():
+        if file.startswith("tmp-voyager-"):
+            shutil.rmtree(file)
