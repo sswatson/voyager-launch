@@ -15,25 +15,22 @@ def voyager(df):
     Launch a browser window with a Voyager exploration of the data in 
     the given pandas DataFrame or sklearn Bunch. 
     """
-    link = in_notebook()
     if not isinstance(df, pd.DataFrame):
         df2 = bunch_to_df(df)
     else:
         df2 = deepcopy(df)
     sanitize_colnames(df2)
-    if link:
-        dir = ''.join(random.choice(string.ascii_letters) for _ in range(6))
-    else:
-        dir = tempfile.mkdtemp()
+    tmpdir = tempfile.mkdtemp()
     parentdir = os.path.dirname(__file__)
-    shutil.copytree(os.path.join(parentdir,"html"), os.path.join(dir,"html"))
-    with open(os.path.join(dir,'html/data.js'), 'w') as file:
+    shutil.copytree(os.path.join(parentdir,"html"), os.path.join(tmpdir,"html"))
+    with open(os.path.join(tmpdir,'html/data.js'), 'w') as file:
         file.write(f"""voyagerInstance.updateData({{"values\":{df2.to_json(orient='records')}}})""")
-    if link:
+    opened = webbrowser.open_new_tab('file://' + os.path.join(tmpdir,'html/main.html'))
+    if not opened:
         from IPython.display import FileLink
-        return FileLink(os.path.join(dir,'html/main.html'))
-    else:
-        webbrowser.open_new_tab('file://' + os.path.join(dir,'html/main.html'))
+        localdir = 'tmp' + ''.join(random.choice(string.ascii_letters) for _ in range(6))
+        shutil.copytree(tmpdir,localdir)
+        return FileLink(os.path.join(localdir,'html/main.html'))
 
 def sanitize_colnames(df):
     """
