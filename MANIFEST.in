@@ -1,1 +1,2 @@
 recursive-include voyager/html *
+recursive-include voyager/ag-grid *
