@@ -39,4 +39,4 @@ imshow(iris)
 
 ## Installation
 
-`pip install git+https://github.com/sswatson/voyager-launch`
+`pip install voyager-launch`
