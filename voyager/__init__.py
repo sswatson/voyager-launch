@@ -94,4 +94,53 @@ def tableview(df):
         file.write(f"var rowData = {df2.to_json(orient='records')};")
     return html_open(tmpdir,'ag-grid/index.html')
 
+def numericalize_categorical_variables(df):
+    new_df = df.copy()
+    for (j, typ) in enumerate(new_df.dtypes):
+        if typ == object:
+            column = new_df.iloc[:, j]
+            category_dict = dict(map(reversed,enumerate(sorted(column.unique()))))
+            new_df.iloc[:, j] = [category_dict[entry] for entry in column]
+    return new_df
 
+def imshow(df,
+           axes=False,
+           width=800,
+           height=800,
+           tickangle=-60,
+           title=""):
+    try:
+        import plotly.io as pio
+        import plotly.graph_objs as go
+    except:
+        raise ImportError("Install plotly to use data frame heatmaps: pip install plotly")
+    num_df = numericalize_categorical_variables(df)
+    trace = go.Heatmap(z=num_df.values[::-1, :],
+                       hovertemplate="%{text}",
+                       text=[[f"row: {j}<br>col: {col}<br>value: {df.loc[j, col]}" for col in df.columns] for j in reversed(df.index)],
+                       name=""
+            )
+    if axes:
+        xaxis = dict(tickmode="array",
+                     tickvals=list(range(len(df.columns))),
+                     ticktext=list(df.columns),
+                     tickangle=tickangle,
+                     side="top")
+        yaxis = dict(
+            tickmode="array",
+            tickvals=list(range(len(df))),
+            ticktext=list(reversed(df.index))
+         )
+    else:
+        xaxis = dict(visible = False)
+        yaxis = dict(visible = False)
+    pio.show(go.Figure(trace, 
+                       layout = dict(
+                           width = width, 
+                           height = height,
+                           title = title,
+                           xaxis = xaxis, 
+                           yaxis = yaxis
+                        )
+             )
+    )

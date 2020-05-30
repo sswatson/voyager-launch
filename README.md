@@ -28,6 +28,15 @@ tableview(iris)
 
 ![demo](https://raw.githubusercontent.com/sswatson/voyager-launch/master/images/tableview.png)
 
+### Data frame heatmaps with hover text
+
+```python
+from voyager import imshow
+imshow(iris)
+```
+
+![demo](https://raw.githubusercontent.com/sswatson/voyager-launch/master/images/imshow.png)
+
 ## Installation
 
 `pip install git+https://github.com/sswatson/voyager-launch`
