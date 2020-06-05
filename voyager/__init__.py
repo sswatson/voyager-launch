@@ -96,9 +96,9 @@ def tableview(df):
 
 def numericalize_categorical_variables(df):
     new_df = df.copy()
-    for (j, typ) in enumerate(new_df.dtypes):
-        if typ == object:
-            column = new_df.iloc[:, j]
+    for (j, dtype) in enumerate(new_df.dtypes):
+        if dtype == object:
+            column = new_df.iloc[:, j].map(str)
             category_dict = dict(map(reversed,enumerate(sorted(column.unique()))))
             new_df.iloc[:, j] = [category_dict[entry] for entry in column]
     return new_df
