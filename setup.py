@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup(name='voyager-launch',
-      version='0.1',
+      version='0.2',
       description='Open DataFrames in Voyager',
       url='http://github.com/sswatson/voyager',
       author='Samuel S. Watson',

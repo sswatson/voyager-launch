@@ -96,15 +96,14 @@ def tableview(df):
 
 def numericalize_categorical_variables(df):
     new_df = df.copy()
-    for (j, dtype) in enumerate(new_df.dtypes):
-        if dtype == object:
-            column = new_df.iloc[:, j].map(str)
+    for (j, typ) in enumerate(new_df.dtypes):
+        if typ == object:
+            column = new_df.iloc[:, j]
             category_dict = dict(map(reversed,enumerate(sorted(column.unique()))))
             new_df.iloc[:, j] = [category_dict[entry] for entry in column]
     return new_df
 
 def imshow(df,
-           standardize_columns=False,
            axes=False,
            width=800,
            height=800,
@@ -116,10 +115,6 @@ def imshow(df,
     except:
         raise ImportError("Install plotly to use data frame heatmaps: pip install plotly")
     num_df = numericalize_categorical_variables(df)
-    if standardize_columns:
-        for i in range(num_df.shape[1]):
-            col = num_df.iloc[:, i]
-            num_df.iloc[:, i] = (col - col.mean())/col.std()
     trace = go.Heatmap(z=num_df.values[::-1, :],
                        hovertemplate="%{text}",
                        text=[[f"row: {j}<br>col: {col}<br>value: {df.loc[j, col]}" for col in df.columns] for j in reversed(df.index)],
